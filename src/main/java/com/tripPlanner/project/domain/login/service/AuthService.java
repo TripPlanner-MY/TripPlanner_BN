@@ -129,6 +129,7 @@ import java.util.concurrent.ConcurrentHashMap;
             Cookie cookie = new Cookie("accessToken",null);
             cookie.setMaxAge(0);
             cookie.setHttpOnly(true);
+            cookie.setSecure(true);
             cookie.setPath("/");
             response.addCookie(cookie);
         }
