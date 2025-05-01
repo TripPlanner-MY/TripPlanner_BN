@@ -165,18 +165,6 @@ public class MainController {
             String contentTypeId = "12";
             System.out.println("keyword : " + keyword + ", regionCode : " + regionCode + ", pageNo : " + pageNo);
 
-            // regionCode만 있는 경우
-            if (keyword.isEmpty() && !regionCode.isEmpty()) {
-                System.out.println("지역 코드만 있을 때 반응");
-
-                Mono<String> result = apiService.getAreaBasedList(regionCode, hashtag, pageNo, arrange, contentTypeId);
-                JSONParser jsonParser = new JSONParser();
-                Object obj = jsonParser.parse(result.block());
-                JSONObject jsonObj = (JSONObject) obj;
-                datas.put("data",jsonObj);
-            }
-
-            if (!keyword.isEmpty() && !regionCode.isEmpty()) {
                 System.out.println("다 있음");
                 Mono<String> searchKeywordResult = apiService.getSearchKeyword(keyword.trim(), pageNo, arrange, contentTypeId, regionCode);
 
@@ -184,7 +172,7 @@ public class MainController {
                 Object obj = jsonParser.parse(searchKeywordResult.block());
                 JSONObject jsonObj = (JSONObject) obj;
                 datas.put("data", jsonObj);
-            }
+
 
 
 /*
