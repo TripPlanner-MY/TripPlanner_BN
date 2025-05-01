@@ -65,19 +65,16 @@ import java.util.concurrent.ConcurrentHashMap;
 
         //쿠키 저장 메서드
         public void setTokenCookies(HttpServletResponse response, String accessToken) {
-            ResponseCookie cookie = ResponseCookie.from("accessToken", accessToken)
-                    .httpOnly(true)
-                    .secure(true) // HTTPS 사용 시 true로 변경
-                    .sameSite("None") // CORS 요청에서도 쿠키 허용
-                    .path("/")
-                    .maxAge(30 * 60) // 30분 유효
-                    .build();
-
-            log.info("쿠키쿠키 : {}",cookie);
-            response.addHeader("Set-Cookie", cookie.toString());
+            Cookie cookie = new Cookie("accessToken", accessToken);
+            cookie.setHttpOnly(true);
+            cookie.setSecure(true);
+            cookie.setPath("/");
+            cookie.setMaxAge(30 * 60); // 30분
+            response.addCookie(cookie);
         }
-    
-    //인증 메일 발송 메서드
+
+
+        //인증 메일 발송 메서드
     public void sendAuthMail(String to,String subject,String body){
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
