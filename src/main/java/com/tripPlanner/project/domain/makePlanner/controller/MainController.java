@@ -165,7 +165,7 @@ public class MainController {
             System.out.println("keyword : " + keyword + ", regionCode : " + regionCode + ", pageNo : " + pageNo);
 
             // regionCode만 있는 경우
-            if (keyword.isEmpty() && !regionCode.isEmpty()) {
+            if ((keyword == null || keyword.isEmpty()) && regionCode != null && !regionCode.isEmpty()) {
                 System.out.println("지역 코드만 있을 때 반응");
 
                 Mono<String> result = apiService.getAreaBasedList(regionCode, hashtag, pageNo, arrange, contentTypeId);
@@ -175,7 +175,7 @@ public class MainController {
                 datas.put("data",jsonObj);
             }
 
-            if (!keyword.isEmpty() && !regionCode.isEmpty()) {
+            if (keyword != null && !keyword.isEmpty() && regionCode != null && !regionCode.isEmpty()) {
                 System.out.println("다 있음");
                 Mono<String> searchKeywordResult = apiService.getSearchKeyword(keyword.trim(), pageNo, arrange, contentTypeId, regionCode);
 
