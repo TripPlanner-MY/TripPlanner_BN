@@ -158,13 +158,36 @@ public class MainController {
             String pageNo = Integer.toString(pageNoNum);
             System.out.println("호출");
             String keyword = word;
-            String regionCode = (String)map.get("areacode");
+            String regionCode = map.get("areacode") != null ? (String) map.get("areacode") : "";
+
             String hashtag = "";
             String arrange = "A";
             String contentTypeId = "12";
             System.out.println("keyword : " + keyword + ", regionCode : " + regionCode + ", pageNo : " + pageNo);
 
             // regionCode만 있는 경우
+            if (keyword.isEmpty() && !regionCode.isEmpty()) {
+                System.out.println("지역 코드만 있을 때 반응");
+
+                Mono<String> result = apiService.getAreaBasedList(regionCode, hashtag, pageNo, arrange, contentTypeId);
+                JSONParser jsonParser = new JSONParser();
+                Object obj = jsonParser.parse(result.block());
+                JSONObject jsonObj = (JSONObject) obj;
+                datas.put("data",jsonObj);
+            }
+
+            if (!keyword.isEmpty() && !regionCode.isEmpty()) {
+                System.out.println("다 있음");
+                Mono<String> searchKeywordResult = apiService.getSearchKeyword(keyword.trim(), pageNo, arrange, contentTypeId, regionCode);
+
+                JSONParser jsonParser = new JSONParser();
+                Object obj = jsonParser.parse(searchKeywordResult.block());
+                JSONObject jsonObj = (JSONObject) obj;
+                datas.put("data", jsonObj);
+            }
+
+
+/*
             if ((keyword == null || keyword.isEmpty()) && regionCode != null && !regionCode.isEmpty()) {
                 System.out.println("지역 코드만 있을 때 반응");
 
@@ -184,28 +207,7 @@ public class MainController {
                 JSONObject jsonObj = (JSONObject) obj;
                 datas.put("data", jsonObj);
             }
-
-
-//            if (!keyword.isEmpty() && !regionCode.isEmpty()) {
-//                System.out.println("다 있음");
-//                Mono<String> areaBasedListResult = apiService.getAreaBasedList(regionCode, hashtag, pageNo, arrange, contentTypeId);
-//                Mono<String> searchKeywordResult = apiService.getSearchKeyword(keyword.trim(), pageNo, arrange, contentTypeId);
-//
-//                Mono<String> result = Mono.zip(areaBasedListResult, searchKeywordResult)
-//                        .flatMap(tuple -> {
-//                            String areaBasedList = tuple.getT1();
-//                            String searchKeyword = tuple.getT2();
-//                            return apiService.findCommonDataByCat2AndAreaCode(areaBasedList, searchKeyword);
-//                        })
-//                        .switchIfEmpty(Mono.just("[]"))
-//                        .doOnTerminate(() -> System.out.println("findCommonDataByCat2AndAreaCode 호출 종료"));
-//
-//                JSONParser jsonParser = new JSONParser();
-//                Object obj = jsonParser.parse(result.block());
-//                JSONObject jsonObj = (JSONObject) obj;
-//                System.out.println(jsonObj);
-//                datas.put("data", jsonObj);
-//            }
+*/
 
         } else {
             System.out.println("error");
